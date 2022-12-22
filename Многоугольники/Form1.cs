@@ -14,6 +14,7 @@ namespace Многоугольники
     {
         List<Shape> figures = new List<Shape> { };
         string currentFigure = "";
+        bool ifIsInside = false;
         public Form1()
         {
             InitializeComponent();
@@ -21,7 +22,6 @@ namespace Многоугольники
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Refresh();
             if (comboBox1.SelectedItem == comboBox1.Items[0])
             {
                 currentFigure = comboBox1.Items[0].ToString();
@@ -37,17 +37,46 @@ namespace Многоугольники
         }
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            switch (currentFigure)
+            if (e.Button == MouseButtons.Right)
             {
-                case "круг":
-                    figures.Add(new Circle (e.X, e.Y, 30));
-                    break;
-                case "квадрат":
-                    figures.Add(new Square(e.X, e.Y, 30));
-                    break;
-                case "треугольник":
-                    figures.Add(new Triangle(e.X, e.Y, 30));
-                    break;
+                ifIsInside = true;
+                for (int i = 0; i < figures.Count; i++)
+                {
+                    if (figures[i].IsInside(e.X, e.Y))
+                    {
+                        figures.RemoveAt(i);
+                        Invalidate();
+                    }
+                }
+            }
+            if (e.Button == MouseButtons.Left)
+            {
+                ifIsInside = false;
+                for (int i = 0; i < figures.Count; i++)
+                {
+                    if (figures[i].IsInside(e.X, e.Y))
+                    {
+                        ifIsInside = true;
+                        figures[i].dragged = true;
+                        figures[i].dx = figures[i].x - e.X;
+                        figures[i].dy = figures[i].y - e.Y;
+                    }
+                }
+                if (!ifIsInside)
+                {
+                    switch (currentFigure)
+                    {
+                        case "круг":
+                            figures.Add(new Circle(e.X, e.Y, 30, false));
+                            break;
+                        case "квадрат":
+                            figures.Add(new Square(e.X, e.Y, 30, false));
+                            break;
+                        case "треугольник":
+                            figures.Add(new Triangle(e.X, e.Y, 30, false));
+                            break;
+                    }
+                }
             }
             Refresh();
         }
@@ -56,6 +85,35 @@ namespace Многоугольники
             for (int i = 0; i < figures.Count; i++)
             {
                 figures[i].Draw(e);
+            }
+        }
+
+        private void Form1_MouseMove(object sender, MouseEventArgs e)
+        {
+            bool doRefresh = false;
+            for (int i = 0; i < figures.Count; i++)
+            {
+                if (figures[i].dragged)
+                {
+                    doRefresh = true;
+                    figures[i].x = e.X;
+                    figures[i].y = e.Y;
+                    if (figures[i].IsInside(e.X, e.Y))
+                    {
+                        figures[i].x += figures[i].dx;
+                        figures[i].y += figures[i].dy;
+                    }
+                }
+
+            }
+            if (doRefresh) Refresh();
+        }
+
+        private void Form1_MouseUp(object sender, MouseEventArgs e)
+        {
+            for (int i = 0; i < figures.Count; i++)
+            {
+                figures[i].dragged = false;
             }
         }
     }
