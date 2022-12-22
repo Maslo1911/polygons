@@ -15,6 +15,7 @@ namespace Многоугольники
         List<Shape> figures = new List<Shape> { };
         string currentFigure = "";
         bool ifIsInside = false;
+        Pen P = new Pen(Color.Green, 3);
         public Form1()
         {
             InitializeComponent();
@@ -82,9 +83,39 @@ namespace Многоугольники
         }
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            bool upper, lower;
+            double k, b;
             for (int i = 0; i < figures.Count; i++)
             {
                 figures[i].Draw(e);
+            }
+            for (int i = 0; i < figures.Count; i++)
+            {
+                for (int j = i + 1; j < figures.Count; j++)
+                {
+                    upper = false;
+                    lower = false;
+                    k = (double)(figures[i].y - figures[j].y) / (double)(figures[i].x - figures[j].x);
+                    b = figures[i].y - (k * figures[i].x);
+                    for (int m = 0; m < figures.Count; m++)
+                    {
+                        if (figures[m] != figures[i] && figures[m] != figures[j])
+                        {
+                            if (figures[m].y < k * figures[m].x + b)
+                            {
+                                upper = true;
+                            }
+                            else
+                            {
+                                lower = true;
+                            }
+                        }
+                        if ((upper == true || lower == true) && (figures[i] != figures[j]))
+                        {
+                            e.Graphics.DrawLine(P, figures[i].x, figures[i].y, figures[j].x, figures[j].y);
+                        }
+                    }
+                }
             }
         }
 

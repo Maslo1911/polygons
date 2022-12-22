@@ -16,6 +16,7 @@ namespace Многоугольники
         public bool dragged;
         public int dx = 0;
         public int dy = 0;
+        protected Point[] curvePoints;
         static Shape()
         {
             c = Color.Black;
@@ -66,7 +67,7 @@ namespace Многоугольники
         public override void Draw(PaintEventArgs e)
         {
             Brush B = new SolidBrush(c);
-            Point[] curvePoints = new Point[3];
+            curvePoints = new Point[3];
             curvePoints[0] = new Point(x, y - r);
             curvePoints[1] = new Point(x + (int)(r * Math.Sqrt(3) / 2), y + r / 2);
             curvePoints[2] = new Point(x - (int)(r * Math.Sqrt(3) / 2), y + r / 2);
@@ -74,7 +75,21 @@ namespace Многоугольники
         }
         public override bool IsInside(int x, int y)
         {
-            return false;
+            double d1 = Math.Sqrt(Math.Pow(Math.Abs(curvePoints[0].X - x), 2) + Math.Pow(Math.Abs(curvePoints[0].Y - y), 2));
+            double d2 = Math.Sqrt(Math.Pow(Math.Abs(curvePoints[1].X - x), 2) + Math.Pow(Math.Abs(curvePoints[1].Y - y), 2));
+            double d3 = Math.Sqrt(Math.Pow(Math.Abs(curvePoints[2].X - x), 2) + Math.Pow(Math.Abs(curvePoints[2].Y - y), 2));
+            double ab = Math.Sqrt(Math.Pow(Math.Abs(curvePoints[0].X - curvePoints[1].X), 2) + Math.Pow(Math.Abs(curvePoints[0].Y - curvePoints[1].Y), 2));
+            double bc = Math.Sqrt(Math.Pow(Math.Abs(curvePoints[1].X - curvePoints[2].X), 2) + Math.Pow(Math.Abs(curvePoints[1].Y - curvePoints[2].Y), 2));
+            double ac = Math.Sqrt(Math.Pow(Math.Abs(curvePoints[0].X - curvePoints[2].X), 2) + Math.Pow(Math.Abs(curvePoints[0].Y - curvePoints[2].Y), 2));
+            double p = (ab + bc + ac) / 2;
+            double p1 = (ab + d1 + d2) / 2;
+            double p2 = (bc + d3 + d2) / 2;
+            double p3 = (ac + d1 + d3) / 2;
+            double s = Math.Sqrt(p * (p - ab) * (p - bc) * (p - ac));
+            double s1 = Math.Sqrt(p1 * (p1 - ab) * (p1 - d1) * (p1 - d2));
+            double s2 = Math.Sqrt(p2 * (p2 - bc) * (p2 - d2) * (p2 - d3));
+            double s3 = Math.Sqrt(p3 * (p3 - ac) * (p3 - d1) * (p3 - d3));
+            return Math.Abs(s - s1 - s2 - s3) <= 1;
         }
     }
 }
