@@ -99,7 +99,7 @@ namespace Многоугольники
                     b = figures[i].y - (k * figures[i].x);
                     for (int m = 0; m < figures.Count; m++)
                     {
-                        if (figures[m] != figures[i] && figures[m] != figures[j])
+                        if (m!=i && m!=j)
                         {
                             if (figures[m].y < k * figures[m].x + b)
                             {
@@ -110,10 +110,10 @@ namespace Многоугольники
                                 lower = true;
                             }
                         }
-                        if ((upper == true || lower == true) && (figures[i] != figures[j]))
-                        {
-                            e.Graphics.DrawLine(P, figures[i].x, figures[i].y, figures[j].x, figures[j].y);
-                        }
+                    }
+                    if (upper == false || lower == false)
+                    {
+                        e.Graphics.DrawLine(P, figures[i].x, figures[i].y, figures[j].x, figures[j].y);
                     }
                 }
             }
