@@ -81,42 +81,65 @@ namespace Многоугольники
             }
             Refresh();
         }
+        private double Cos(double x1, double x2, double y1, double y2)
+        {
+            return (x1 * x2 + y1 * y2) / (Math.Sqrt(Math.Pow(x1, 2) + Math.Pow(x2, 2)) * Math.Sqrt(Math.Pow(y1, 2) + Math.Pow(y2, 2)));
+        }
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            bool upper, lower;
-            double k, b;
+            //bool upper, lower;
+            //double k, b;
             for (int i = 0; i < figures.Count; i++)
             {
                 figures[i].Draw(e);
             }
-            for (int i = 0; i < figures.Count; i++)
+            //for (int i = 0; i < figures.Count; i++)
+            //{
+            //    for (int j = i + 1; j < figures.Count; j++)
+            //    {
+            //        upper = false;
+            //        lower = false;
+            //        k = (double)(figures[i].y - figures[j].y) / (double)(figures[i].x - figures[j].x);
+            //        b = figures[i].y - (k * figures[i].x);
+            //        for (int m = 0; m < figures.Count; m++)
+            //        {
+            //            if (m!=i && m!=j)
+            //            {
+            //                if (figures[m].y < k * figures[m].x + b)
+            //                {
+            //                    upper = true;
+            //                }
+            //                else
+            //                {
+            //                    lower = true;
+            //                }
+            //            }
+            //        }
+            //        if (upper == false || lower == false)
+            //        {
+            //            e.Graphics.DrawLine(P, figures[i].x, figures[i].y, figures[j].x, figures[j].y);
+            //        }
+            //    }
+            //}
+            int firstShape = 0;
+            foreach (Shape i in figures)
             {
-                for (int j = i + 1; j < figures.Count; j++)
+                if (i.x <= figures[firstShape].x)
+                    firstShape = figures.IndexOf(i);
+            }
+            double minCos = 1;
+            int idx = 0;
+            foreach (Shape i in figures)
+            {
+                if (i == figures[firstShape]) continue;
+                if (Cos(0, i.x - figures[firstShape].x, -1000, i.y - figures[firstShape].y) < minCos)
                 {
-                    upper = false;
-                    lower = false;
-                    k = (double)(figures[i].y - figures[j].y) / (double)(figures[i].x - figures[j].x);
-                    b = figures[i].y - (k * figures[i].x);
-                    for (int m = 0; m < figures.Count; m++)
-                    {
-                        if (m!=i && m!=j)
-                        {
-                            if (figures[m].y < k * figures[m].x + b)
-                            {
-                                upper = true;
-                            }
-                            else
-                            {
-                                lower = true;
-                            }
-                        }
-                    }
-                    if (upper == false || lower == false)
-                    {
-                        e.Graphics.DrawLine(P, figures[i].x, figures[i].y, figures[j].x, figures[j].y);
-                    }
+                    minCos = Cos(0, i.x - figures[firstShape].x, -1000, i.y - figures[firstShape].y);
+                    idx = figures.IndexOf(i);
                 }
             }
+            if (figures.Count > 0)
+                e.Graphics.DrawLine(P, figures[firstShape].x, figures[firstShape].y, figures[idx].x, figures[idx].y);
         }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
