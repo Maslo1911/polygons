@@ -17,6 +17,7 @@ namespace Многоугольники
         public int dx = 0;
         public int dy = 0;
         protected Point[] curvePoints;
+        public bool drawLine;
         static Shape()
         {
             c = Color.Black;
@@ -28,6 +29,7 @@ namespace Многоугольники
             this.y = y;
             r = R;
             this.dragged = dragged;
+            drawLine = false;
         }
         public abstract void Draw(PaintEventArgs e);
         public abstract bool IsInside(int x, int y);
