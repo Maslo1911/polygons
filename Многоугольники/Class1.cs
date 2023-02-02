@@ -10,7 +10,7 @@ namespace Многоугольники
 {
     abstract class Shape
     {
-        protected static Color c;
+        public static Color c;
         protected static int r;
         public int x, y;
         public bool dragged;

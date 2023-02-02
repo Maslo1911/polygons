@@ -16,7 +16,7 @@ namespace Многоугольники
         string currentFigure = "";
         bool ifIsInside = false;
         Pen P = new Pen(Color.Green, 3);
-        bool isJarvis;
+        bool isJarvis, flag;
         public Form1()
         {
             InitializeComponent();
@@ -38,7 +38,7 @@ namespace Многоугольники
                 }
             }
             if (e.Button == MouseButtons.Left)
-            {
+            {               
                 ifIsInside = false;
                 for (int i = 0; i < figures.Count; i++)
                 {
@@ -64,10 +64,9 @@ namespace Многоугольники
                             figures.Add(new Triangle(e.X, e.Y, 30, false));
                             break;
                     }
-                }
-
+                }             
+                Refresh();
             }
-            Refresh();
         }
         private double Cos(double x1, double x2, double y1, double y2)
         {
@@ -130,9 +129,9 @@ namespace Многоугольники
                 foreach (Shape i in figures)
                 {
                     if (i == figures[firstShape]) continue;
-                    if (Cos(0, i.x - figures[firstShape].x, -2000, i.y - figures[firstShape].y) < minCos)
+                    if (Cos(0, i.x - figures[firstShape].x, -3000, i.y - figures[firstShape].y) < minCos)
                     {
-                        minCos = Cos(0, i.x - figures[firstShape].x, -2000, i.y - figures[firstShape].y);
+                        minCos = Cos(0, i.x - figures[firstShape].x, -3000, i.y - figures[firstShape].y);
                         idx = figures.IndexOf(i);
                     }
                 }
@@ -162,18 +161,6 @@ namespace Многоугольники
                     currentShape = idx;
                 } while (idx != firstShape);
             }
-            if (figures.Count > 3)
-            {
-                for (int i = 0; i < figures.Count; i++)
-                {
-                    if (!figures[i].drawLine)
-                    {
-                        figures.RemoveAt(i);
-                        i--;
-                        Invalidate();
-                    }
-                }
-            }
         }
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -196,12 +183,29 @@ namespace Многоугольники
             if (doRefresh) Refresh();
         }
 
+        private void RemoveInsade()
+        {
+            if (figures.Count > 3)
+            {
+                for (int i = 0; i < figures.Count; i++)
+                {
+                    if (!figures[i].drawLine)
+                    {
+                        figures.RemoveAt(i);
+                        i--;                       
+                    }
+                }
+            }
+        }
+
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
             for (int i = 0; i < figures.Count; i++)
             {
-                figures[i].dragged = false;
+                figures[i].dragged = false;;
             }
+            RemoveInsade();
+            Refresh();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -252,6 +256,17 @@ namespace Многоугольники
                 toolStripMenuItem7.Checked = false;
                 isJarvis = true;
             }
+        }
+
+        private void toolStripMenuItem5_Click(object sender, EventArgs e)
+        {
+            DialogResult clr = colorDialog1.ShowDialog();
+            if (clr == DialogResult.OK)
+            {
+                Shape.c = colorDialog1.Color;
+            }
+            Refresh();
+            MessageBox.Show("Цвет изменён");
         }
     }
 }
