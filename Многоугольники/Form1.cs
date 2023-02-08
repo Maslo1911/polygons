@@ -17,10 +17,10 @@ namespace Многоугольники
         bool ifIsInside = false;
         Pen P = new Pen(Color.Green, 3);
         bool isJarvis, flag;
+        int dx, dy;
         public Form1()
         {
             InitializeComponent();
-
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
@@ -66,6 +66,7 @@ namespace Многоугольники
                     }
                 }             
                 Refresh();
+                RemoveInsade();               
             }
         }
         private double Cos(double x1, double x2, double y1, double y2)
@@ -74,10 +75,6 @@ namespace Многоугольники
         }
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            for (int i = 0; i < figures.Count; i++)
-            {
-                figures[i].Draw(e);
-            }
             if (!isJarvis)
             {
                 foreach (Shape i in figures)
@@ -161,6 +158,10 @@ namespace Многоугольники
                     currentShape = idx;
                 } while (idx != firstShape);
             }
+            for (int i = 0; i < figures.Count; i++)
+            {
+                figures[i].Draw(e);
+            }
         }
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -172,13 +173,21 @@ namespace Многоугольники
                     doRefresh = true;
                     figures[i].x = e.X;
                     figures[i].y = e.Y;
-                    if (figures[i].IsInside(e.X, e.Y))
-                    {
-                        figures[i].x += figures[i].dx;
-                        figures[i].y += figures[i].dy;
-                    }
-                }
+                    figures[i].x += figures[i].dx;
+                    figures[i].y += figures[i].dy;
 
+                }
+            }
+            if (flag)
+            {
+                foreach (Shape i in figures)
+                {
+                    i.x += e.X - dx;
+                    i.y += e.Y - dy;
+                }
+                dx += e.X - dx;
+                dy += e.Y - dy;
+                Refresh();               
             }
             if (doRefresh) Refresh();
         }
@@ -191,11 +200,16 @@ namespace Многоугольники
                 {
                     if (!figures[i].drawLine)
                     {
+                        dx = figures[i].x;
+                        dy = figures[i].y;
                         figures.RemoveAt(i);
-                        i--;                       
+                        i--;
+                        flag = true;
                     }
+                    else flag = false;
                 }
             }
+            Refresh();
         }
 
         private void Form1_MouseUp(object sender, MouseEventArgs e)
@@ -205,7 +219,7 @@ namespace Многоугольники
                 figures[i].dragged = false;;
             }
             RemoveInsade();
-            Refresh();
+            flag = false;
         }
 
         private void Form1_Load(object sender, EventArgs e)
