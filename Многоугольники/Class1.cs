@@ -10,7 +10,7 @@ namespace Многоугольники
 {
     abstract class Shape
     {
-        public static Color c;
+        protected static Color c;
         protected static int r;
         public int x, y;
         public bool dragged;
@@ -33,6 +33,16 @@ namespace Многоугольники
         }
         public abstract void Draw(PaintEventArgs e);
         public abstract bool IsInside(int x, int y);
+        public static Color Color
+        {
+            get { return c; }
+            set { c = value; }
+        }
+        public static int Radius
+        {
+            get { return r; }
+            set { r = value; }
+        }
     }
     class Circle : Shape
     {
@@ -92,6 +102,19 @@ namespace Многоугольники
             double s2 = Math.Sqrt(p2 * (p2 - bc) * (p2 - d2) * (p2 - d3));
             double s3 = Math.Sqrt(p3 * (p3 - ac) * (p3 - d1) * (p3 - d3));
             return Math.Abs(s - s1 - s2 - s3) <= 1;
+        }
+    }
+    public class RadiusEventArgs
+    {
+        protected int radius;
+        public RadiusEventArgs(int radius)
+        {
+            this.radius = radius;
+        }
+        public int Radius
+        {
+            get { return radius; }
+            set { radius = value; }
         }
     }
 }

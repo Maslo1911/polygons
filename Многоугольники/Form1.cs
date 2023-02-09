@@ -18,6 +18,7 @@ namespace Многоугольники
         Pen P = new Pen(Color.Green, 3);
         bool isJarvis, flag;
         int dx, dy;
+        Form2 f2;
         public Form1()
         {
             InitializeComponent();
@@ -272,15 +273,27 @@ namespace Многоугольники
             }
         }
 
-        private void toolStripMenuItem5_Click(object sender, EventArgs e)
+        private void colorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DialogResult clr = colorDialog1.ShowDialog();
             if (clr == DialogResult.OK)
             {
-                Shape.c = colorDialog1.Color;
+                Shape.Color = colorDialog1.Color;
             }
             Refresh();
             MessageBox.Show("Цвет изменён");
+        }
+
+        private void radiusToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            f2 = new Form2();
+            f2.RadiusChanged += new Form2.RadiusDelegate(UpdateRadius);
+            f2.Show();
+        }
+        private void UpdateRadius(object sender, RadiusEventArgs e)
+        {
+            Shape.Radius = e.Radius;
+            Refresh();
         }
     }
 }
