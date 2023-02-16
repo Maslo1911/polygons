@@ -21,7 +21,7 @@ namespace Многоугольники
         static Shape()
         {
             c = Color.Black;
-            r = 20;
+            r = 25;
         }
         public Shape(int x, int y, int R, bool dragged)
         {

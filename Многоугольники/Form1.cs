@@ -56,13 +56,13 @@ namespace Многоугольники
                     switch (currentFigure)
                     {
                         case "круг":
-                            figures.Add(new Circle(e.X, e.Y, 30, false));
+                            figures.Add(new Circle(e.X, e.Y, Shape.Radius, false));
                             break;
                         case "квадрат":
-                            figures.Add(new Square(e.X, e.Y, 30, false));
+                            figures.Add(new Square(e.X, e.Y, Shape.Radius, false));
                             break;
                         case "треугольник":
-                            figures.Add(new Triangle(e.X, e.Y, 30, false));
+                            figures.Add(new Triangle(e.X, e.Y, Shape.Radius, false));
                             break;
                     }
                 }             
@@ -286,9 +286,20 @@ namespace Многоугольники
 
         private void radiusToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            f2 = new Form2();
-            f2.RadiusChanged += new Form2.RadiusDelegate(UpdateRadius);
-            f2.Show();
+            if (f2 == null || f2.IsDisposed)
+            {
+                f2 = new Form2(Shape.Radius);               
+                f2.RadiusChanged += new Form2.RadiusDelegate(UpdateRadius);
+                f2.Show();
+            }
+            else if (f2.WindowState == FormWindowState.Minimized)
+            {
+                f2.WindowState = FormWindowState.Normal;
+            }
+            //else if (!f2.D)
+            //{
+            //    f2.Activate();
+            //}
         }
         private void UpdateRadius(object sender, RadiusEventArgs e)
         {

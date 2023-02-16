@@ -12,9 +12,11 @@ namespace Многоугольники
 {
     public partial class Form2 : Form
     {
-        public Form2()
+        Form1 f1;
+        public Form2(int radius)
         {
             InitializeComponent();
+            trackBar1.Value = radius;
         }
         public delegate void RadiusDelegate(object sender, RadiusEventArgs e);
         public event RadiusDelegate RadiusChanged;
