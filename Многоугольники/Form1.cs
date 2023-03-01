@@ -72,7 +72,7 @@ namespace Многоугольники
         }
         private double Cos(double x1, double x2, double y1, double y2)
         {
-            return (x1 * x2 + y1 * y2) / (Math.Sqrt(Math.Pow(x1, 2) + Math.Pow(x2, 2)) * Math.Sqrt(Math.Pow(y1, 2) + Math.Pow(y2, 2)));
+            return (x1 * x2 + y1 * y2) / (Math.Sqrt(Math.Pow(x1, 2) + Math.Pow(y1, 2)) * Math.Sqrt(Math.Pow(x2, 2) + Math.Pow(y2, 2)));
         }
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
@@ -127,12 +127,14 @@ namespace Многоугольники
                 foreach (Shape i in figures)
                 {
                     if (i == figures[firstShape]) continue;
-                    if (Cos(0, i.x - figures[firstShape].x, -3000, i.y - figures[firstShape].y) < minCos)
+                    if (Cos(0, i.x - figures[firstShape].x, -20000, i.y - figures[firstShape].y) < minCos)
                     {
-                        minCos = Cos(0, i.x - figures[firstShape].x, -3000, i.y - figures[firstShape].y);
+                        minCos = Cos(0, i.x - figures[firstShape].x, -20000, i.y - figures[firstShape].y);
                         idx = figures.IndexOf(i);
                     }
                 }
+                figures[firstShape].drawLine = true;
+                figures[idx].drawLine = true;
                 if (figures.Count > 0)
                     e.Graphics.DrawLine(P, figures[firstShape].x, figures[firstShape].y, figures[idx].x, figures[idx].y);
                 double x1 = figures[firstShape].x - figures[idx].x;
@@ -141,19 +143,19 @@ namespace Многоугольники
                 do
                 {
                     minCos = 1;
-                    for (int i = 0; i < figures.Count; i++)
+                    foreach (Shape i in figures)
                     {
-                        if (figures[i] == figures[currentShape] || figures[i] == figures[idx]) continue;
+                        if (i == figures[currentShape] || i == figures[idx]) continue;
 
-                        if (Cos(x1, figures[i].x - figures[currentShape].x, y1, figures[i].y - figures[currentShape].y) < minCos)
+                        if (Cos(x1, i.x - figures[currentShape].x, y1, i.y - figures[currentShape].y) < minCos)
                         {
-                            minCos = Cos(x1, figures[i].x - figures[currentShape].x, y1, figures[i].y - figures[currentShape].y);
-                            idx = i;
+                            minCos = Cos(x1, i.x - figures[currentShape].x, y1, i.y - figures[currentShape].y);
+                            idx = figures.IndexOf(i);
                         }
                     }
-                    e.Graphics.DrawLine(P, figures[currentShape].x, figures[currentShape].y, figures[idx].x, figures[idx].y);
                     figures[currentShape].drawLine = true;
                     figures[idx].drawLine = true;
+                    e.Graphics.DrawLine(P, figures[currentShape].x, figures[currentShape].y, figures[idx].x, figures[idx].y);
                     x1 = figures[currentShape].x - figures[idx].x;
                     y1 = figures[currentShape].y - figures[idx].y;
                     currentShape = idx;
@@ -296,10 +298,10 @@ namespace Многоугольники
             {
                 f2.WindowState = FormWindowState.Normal;
             }
-            //else if (!f2.D)
-            //{
-            //    f2.Activate();
-            //}
+            else if (ActiveForm != f2)
+            {
+                f2.Activate();
+            }
         }
         private void UpdateRadius(object sender, RadiusEventArgs e)
         {
