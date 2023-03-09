@@ -22,6 +22,7 @@ namespace Многоугольники
         bool isJarvis, flag;
         int dx, dy;
         Form2 f2;
+        string fileName;
         public Form1()
         {
             InitializeComponent();
@@ -239,33 +240,76 @@ namespace Многоугольники
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            if (figures.Count != 0)
+            {
+                MessageBoxButtons buttons = MessageBoxButtons.YesNoCancel;
+                MessageBoxIcon icon = MessageBoxIcon.Warning;
+                DialogResult result = MessageBox.Show("Сохранить изменеия?", "Сохранить или нет", buttons, icon);
+                if (result == DialogResult.Yes)
+                {
+                    saveToolStripMenuItem_Click(sender, e);
+                    figures.RemoveRange(0, figures.Count);
+                }
+                else if (result == DialogResult.No)
+                    figures.RemoveRange(0, figures.Count);
+            }
+            Refresh();
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream fs = new FileStream("state", FileMode.Open, FileAccess.Read);
-            figures = (List<Shape>)bf.Deserialize(fs);
-            Shape.Color = (Color)bf.Deserialize(fs);
-            Shape.Radius = (int)bf.Deserialize(fs);
-            fs.Close();
+            using (OpenFileDialog dialog = new OpenFileDialog())
+            {
+                dialog.Filter = "bin files (*.bin)|*.bin|All files (*.*)|*.*";
+                dialog.FilterIndex = 1;
+                dialog.RestoreDirectory = true;
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    fileName = dialog.FileName;
+                    BinaryFormatter bf = new BinaryFormatter();
+                    FileStream fs = new FileStream(dialog.FileName, FileMode.Open, FileAccess.Read);
+                    figures = (List<Shape>)bf.Deserialize(fs);
+                    Shape.Color = (Color)bf.Deserialize(fs);
+                    Shape.Radius = (int)bf.Deserialize(fs);
+                    fs.Close();
+                }
+            }
             Refresh();
         }
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            BinaryFormatter bf = new BinaryFormatter();
-            FileStream fs = new FileStream("state", FileMode.Create, FileAccess.Write);
-            bf.Serialize(fs, figures);
-            bf.Serialize(fs, Shape.Color);
-            bf.Serialize(fs, Shape.Radius);
-            fs.Close();
+            if (fileName != null)
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.Write);
+                bf.Serialize(fs, figures);
+                bf.Serialize(fs, Shape.Color);
+                bf.Serialize(fs, Shape.Radius);
+                fs.Close();
+            }
+            else 
+                saveAsToolStripMenuItem_Click(sender, e);
         }
 
         private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            using (SaveFileDialog dialog = new SaveFileDialog())
+            {
+                dialog.Filter = "bin files (*.bin)|*.bin|All files (*.*)|*.*";
+                dialog.FilterIndex = 1;
+                dialog.RestoreDirectory = true;
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    fileName = dialog.FileName;
+                    BinaryFormatter bf = new BinaryFormatter();
+                    FileStream fs = new FileStream(dialog.FileName, FileMode.Create, FileAccess.Write);
+                    bf.Serialize(fs, figures);
+                    bf.Serialize(fs, Shape.Color);
+                    bf.Serialize(fs, Shape.Radius);
+                    fs.Close();
+                }
+            }
         }
 
         private void figurestoolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
