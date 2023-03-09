@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace Многоугольники
 {
@@ -228,49 +231,80 @@ namespace Многоугольники
         private void Form1_Load(object sender, EventArgs e)
         {
             DoubleBuffered = true;
-            if (toolStripMenuItem2.Checked)
+            if (circleToolStripMenuItem.Checked)
                 currentFigure = "круг";
-            if (toolStripMenuItem7.Checked)
+            if (standardToolStripMenuItem.Checked)
                 isJarvis = false;
         }
 
-        private void toolStripMenuItem1_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (toolStripMenuItem2.Selected)
+
+        }
+
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream fs = new FileStream("state", FileMode.Open, FileAccess.Read);
+            figures = (List<Shape>)bf.Deserialize(fs);
+            Shape.Color = (Color)bf.Deserialize(fs);
+            Shape.Radius = (int)bf.Deserialize(fs);
+            fs.Close();
+            Refresh();
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream fs = new FileStream("state", FileMode.Create, FileAccess.Write);
+            bf.Serialize(fs, figures);
+            bf.Serialize(fs, Shape.Color);
+            bf.Serialize(fs, Shape.Radius);
+            fs.Close();
+        }
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void figurestoolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if (circleToolStripMenuItem.Selected)
             {
-                toolStripMenuItem2.Checked = true;
-                toolStripMenuItem3.Checked = false;
-                toolStripMenuItem4.Checked = false;
+                circleToolStripMenuItem.Checked = true;
+                squareToolStripMenuItem.Checked = false;
+                triangleToolStripMenuItem.Checked = false;
                 currentFigure = "круг";
             }
-            if (toolStripMenuItem3.Selected)
+            if (squareToolStripMenuItem.Selected)
             {
-                toolStripMenuItem3.Checked = true;
-                toolStripMenuItem2.Checked = false;
-                toolStripMenuItem4.Checked = false;
+                squareToolStripMenuItem.Checked = true;
+                circleToolStripMenuItem.Checked = false;
+                triangleToolStripMenuItem.Checked = false;
                 currentFigure = "квадрат";
             }
-            if (toolStripMenuItem4.Selected)
+            if (triangleToolStripMenuItem.Selected)
             {
-                toolStripMenuItem4.Checked = true;
-                toolStripMenuItem2.Checked = false;
-                toolStripMenuItem3.Checked = false;
+                triangleToolStripMenuItem.Checked = true;
+                circleToolStripMenuItem.Checked = false;
+                squareToolStripMenuItem.Checked = false;
                 currentFigure = "треугольник";
             }
         }
 
-        private void toolStripMenuItem6_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        private void algorithmsToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            if (toolStripMenuItem7.Selected)
+            if (circleToolStripMenuItem.Selected)
             {
-                toolStripMenuItem7.Checked = true;
-                toolStripMenuItem8.Checked = false;
+                standardToolStripMenuItem.Checked = true;
+                jarvisToolStripMenuItem.Checked = false;
                 isJarvis = false;
             }
-            if (toolStripMenuItem8.Selected)
+            if (squareToolStripMenuItem.Selected)
             {
-                toolStripMenuItem8.Checked = true;
-                toolStripMenuItem7.Checked = false;
+                jarvisToolStripMenuItem.Checked = true;
+                standardToolStripMenuItem.Checked = false;
                 isJarvis = true;
             }
         }
@@ -303,6 +337,7 @@ namespace Многоугольники
                 f2.Activate();
             }
         }
+
         private void UpdateRadius(object sender, RadiusEventArgs e)
         {
             Shape.Radius = e.Radius;

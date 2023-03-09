@@ -8,15 +8,21 @@ using System.Windows.Forms;
 
 namespace Многоугольники
 {
+    [Serializable]
     abstract class Shape
     {
         protected static Color c;
         protected static int r;
         public int x, y;
+        [NonSerialized]
         public bool dragged;
+        [NonSerialized]
         public int dx = 0;
+        [NonSerialized]
         public int dy = 0;
+        [NonSerialized]
         protected Point[] curvePoints;
+        [NonSerialized]
         public bool drawLine;
         static Shape()
         {
@@ -44,6 +50,7 @@ namespace Многоугольники
             set { r = value; }
         }
     }
+    [Serializable]
     class Circle : Shape
     {
         public Circle(int x, int y, int R, bool dragged) : base(x, y, R, dragged) { }
@@ -58,6 +65,7 @@ namespace Многоугольники
             return d <= r;
         }
     }
+    [Serializable]
     class Square : Shape
     {
         public Square(int x, int y, int R, bool dragged) : base(x, y, R, dragged) { }
@@ -73,6 +81,7 @@ namespace Многоугольники
             return Math.Abs(this.x - x) <= d && Math.Abs(this.y - y) <= d;
         }
     }
+    [Serializable]
     class Triangle : Shape
     {
         public Triangle(int x, int y, int R, bool dragged) : base(x, y, R, dragged) { }
