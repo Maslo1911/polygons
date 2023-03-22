@@ -21,8 +21,10 @@ namespace Многоугольники
         Pen P = new Pen(Color.Green, 3);
         bool isJarvis, flag;
         int dx, dy;
+        Form1 f1;
         Form2 f2;
         string fileName;
+        bool isSaved = true;
         public Form1()
         {
             InitializeComponent();
@@ -37,7 +39,8 @@ namespace Многоугольники
                 {
                     if (figures[i].IsInside(e.X, e.Y))
                     {
-                        figures.RemoveAt(i);                     
+                        figures.RemoveAt(i);
+                        isSaved = false;
                         Invalidate();
                     }
                 }
@@ -53,6 +56,7 @@ namespace Многоугольники
                         figures[i].dragged = true;
                         figures[i].dx = figures[i].x - e.X;
                         figures[i].dy = figures[i].y - e.Y;
+                        isSaved = false;
                     }
                 }
                 if (!ifIsInside)
@@ -69,6 +73,7 @@ namespace Многоугольники
                             figures.Add(new Triangle(e.X, e.Y, Shape.Radius, false));
                             break;
                     }
+                    isSaved = false;
                 }             
                 Refresh();
                 RemoveInsade();               
@@ -182,7 +187,7 @@ namespace Многоугольники
                     figures[i].y = e.Y;
                     figures[i].x += figures[i].dx;
                     figures[i].y += figures[i].dy;
-
+                    isSaved = false;
                 }
             }
             if (flag)
@@ -194,6 +199,7 @@ namespace Многоугольники
                 }
                 dx += e.X - dx;
                 dy += e.Y - dy;
+                isSaved = false;
                 Refresh();               
             }
             if (doRefresh) Refresh();
@@ -210,6 +216,7 @@ namespace Многоугольники
                         dx = figures[i].x;
                         dy = figures[i].y;
                         figures.RemoveAt(i);
+                        isSaved = false;
                         i--;
                         flag = true;
                     }
@@ -240,19 +247,22 @@ namespace Многоугольники
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (figures.Count != 0)
+            if (!isSaved)
             {
                 MessageBoxButtons buttons = MessageBoxButtons.YesNoCancel;
                 MessageBoxIcon icon = MessageBoxIcon.Warning;
                 DialogResult result = MessageBox.Show("Сохранить изменеия?", "Сохранить или нет", buttons, icon);
                 if (result == DialogResult.Yes)
                 {
-                    saveToolStripMenuItem_Click(sender, e);
-                    figures.RemoveRange(0, figures.Count);
+                    saveToolStripMenuItem_Click(sender, e);                
+                    isSaved = true;
                 }
                 else if (result == DialogResult.No)
-                    figures.RemoveRange(0, figures.Count);
+                {
+                    isSaved = true;
+                }
             }
+            figures.RemoveRange(0, figures.Count);
             Refresh();
         }
 
@@ -260,18 +270,36 @@ namespace Многоугольники
         {
             using (OpenFileDialog dialog = new OpenFileDialog())
             {
+                bool fl = true;
                 dialog.Filter = "bin files (*.bin)|*.bin|All files (*.*)|*.*";
                 dialog.FilterIndex = 1;
                 dialog.RestoreDirectory = true;
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    fileName = dialog.FileName;
-                    BinaryFormatter bf = new BinaryFormatter();
-                    FileStream fs = new FileStream(dialog.FileName, FileMode.Open, FileAccess.Read);
-                    figures = (List<Shape>)bf.Deserialize(fs);
-                    Shape.Color = (Color)bf.Deserialize(fs);
-                    Shape.Radius = (int)bf.Deserialize(fs);
-                    fs.Close();
+                    if (!isSaved)
+                    {
+                        MessageBoxButtons buttons = MessageBoxButtons.YesNoCancel;
+                        MessageBoxIcon icon = MessageBoxIcon.Warning;
+                        DialogResult result = MessageBox.Show("Сохранить изменеия?", "Сохранить или нет", buttons, icon);
+                        if (result == DialogResult.Yes)
+                        {
+                            saveToolStripMenuItem_Click(sender, e);
+                        }
+                        if (result == DialogResult.Cancel)
+                            fl = false;
+                    }
+                    if (fl)
+                    {
+                        fileName = dialog.FileName;
+                        BinaryFormatter bf = new BinaryFormatter();
+                        FileStream fs = new FileStream(dialog.FileName, FileMode.Open, FileAccess.Read);
+                        figures = (List<Shape>)bf.Deserialize(fs);
+                        Shape.Color = (Color)bf.Deserialize(fs);
+                        Shape.Radius = (int)bf.Deserialize(fs);
+                        fs.Close();
+                        isSaved = true;
+                        Form1.ActiveForm.Text = "Многоугольники: " + fileName;
+                    }
                 }
             }
             Refresh();
@@ -287,6 +315,8 @@ namespace Многоугольники
                 bf.Serialize(fs, Shape.Color);
                 bf.Serialize(fs, Shape.Radius);
                 fs.Close();
+                isSaved = true;
+                Form1.ActiveForm.Text = "Многоугольники: " + fileName;
             }
             else 
                 saveAsToolStripMenuItem_Click(sender, e);
@@ -308,6 +338,8 @@ namespace Многоугольники
                     bf.Serialize(fs, Shape.Color);
                     bf.Serialize(fs, Shape.Radius);
                     fs.Close();
+                    isSaved = true;
+                    Form1.ActiveForm.Text = "Многоугольники: " + fileName;
                 }
             }
         }
@@ -362,6 +394,7 @@ namespace Многоугольники
             }
             Refresh();
             MessageBox.Show("Цвет изменён");
+            isSaved = false;
         }
 
         private void radiusToolStripMenuItem_Click(object sender, EventArgs e)
@@ -385,6 +418,7 @@ namespace Многоугольники
         private void UpdateRadius(object sender, RadiusEventArgs e)
         {
             Shape.Radius = e.Radius;
+            isSaved = false;
             Refresh();
         }
     }
