@@ -188,6 +188,7 @@ namespace Многоугольники
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Многоугольники";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);

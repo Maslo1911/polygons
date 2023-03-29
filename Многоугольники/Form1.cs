@@ -244,6 +244,21 @@ namespace Многоугольники
             if (standardToolStripMenuItem.Checked)
                 isJarvis = false;
         }
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!isSaved)
+            {
+                MessageBoxButtons buttons = MessageBoxButtons.YesNoCancel;
+                MessageBoxIcon icon = MessageBoxIcon.Warning;
+                DialogResult result = MessageBox.Show("Сохранить изменеия?", "Сохранить или нет", buttons, icon);
+                if (result == DialogResult.Yes)
+                {
+                    saveToolStripMenuItem_Click(sender, e);
+                }
+                if (result == DialogResult.Cancel)
+                    e.Cancel = true;
+            }
+        }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
