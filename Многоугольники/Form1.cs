@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shapes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -21,7 +22,6 @@ namespace Многоугольники
         Pen P = new Pen(Color.Green, 3);
         bool isJarvis, flag;
         int dx, dy;
-        Form1 f1;
         Form2 f2;
         string fileName;
         bool isSaved = true;
@@ -262,6 +262,7 @@ namespace Многоугольники
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            bool fl = true;
             if (!isSaved)
             {
                 MessageBoxButtons buttons = MessageBoxButtons.YesNoCancel;
@@ -269,16 +270,21 @@ namespace Многоугольники
                 DialogResult result = MessageBox.Show("Сохранить изменеия?", "Сохранить или нет", buttons, icon);
                 if (result == DialogResult.Yes)
                 {
-                    saveToolStripMenuItem_Click(sender, e);                
+                    saveToolStripMenuItem_Click(sender, e);
                     isSaved = true;
                 }
                 else if (result == DialogResult.No)
                 {
                     isSaved = true;
                 }
+                else if (result == DialogResult.Cancel)
+                    fl = false;
             }
-            figures.RemoveRange(0, figures.Count);
-            Refresh();
+            if (fl)
+            {
+                figures.RemoveRange(0, figures.Count);
+                Refresh();
+            }
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
