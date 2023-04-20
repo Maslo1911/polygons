@@ -19,7 +19,7 @@ namespace Многоугольники
         List<Shape> figures = new List<Shape> { };
         string currentFigure = "";
         bool ifIsInside = false;
-        Pen P = new Pen(Color.Green, 3);
+        Pen P = new Pen(Color.Black, 4);
         bool isJarvis, flag;
         int dx, dy;
         Form2 f2;
@@ -272,10 +272,20 @@ namespace Многоугольники
                 {
                     saveToolStripMenuItem_Click(sender, e);
                     isSaved = true;
+                    fileName = null;
+                    Form1.ActiveForm.Text = "Многоугольники";
+                    Shape.Color = Color.Black;
+                    Shape.Radius = 25;
+                    f2.Close();
                 }
                 else if (result == DialogResult.No)
                 {
                     isSaved = true;
+                    fileName = null;
+                    Shape.Color = Color.Black;
+                    Shape.Radius = 25;
+                    Form1.ActiveForm.Text = "Многоугольники";
+                    f2.Close();
                 }
                 else if (result == DialogResult.Cancel)
                     fl = false;
@@ -322,6 +332,7 @@ namespace Многоугольники
                         Form1.ActiveForm.Text = "Многоугольники: " + fileName;
                     }
                 }
+                f2.Close();
             }
             Refresh();
         }
