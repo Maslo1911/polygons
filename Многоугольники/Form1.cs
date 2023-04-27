@@ -25,6 +25,8 @@ namespace Многоугольники
         Form2 f2;
         string fileName;
         bool isSaved = true;
+        static Random random = new Random();
+        bool timer_flag = false;
         public Form1()
         {
             InitializeComponent();
@@ -447,11 +449,42 @@ namespace Многоугольники
             }
         }
 
+        private void startToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            timer_flag = true;
+            timer1.Start();
+        }
+
+        private void stopToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            timer_flag = false;
+            timer1.Stop();
+        }
+
         private void UpdateRadius(object sender, RadiusEventArgs e)
         {
             Shape.Radius = e.Radius;
             isSaved = false;
             Refresh();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (timer_flag)
+            {
+                for (int i = 0; i < figures.Count; i++)
+                {
+                    if (figures[i].dragged == false)
+                    {
+                        figures[i].x += random.Next(-1, 2); figures[i].y += random.Next(-1, 2);
+                    }
+                }
+                Refresh();
+                if (figures.Count >= 3)
+                {
+                    Refresh();
+                }
+            }
         }
     }
 }
