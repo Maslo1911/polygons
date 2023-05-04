@@ -275,26 +275,23 @@ namespace Многоугольники
                     saveToolStripMenuItem_Click(sender, e);
                     isSaved = true;
                     fileName = null;
-                    Form1.ActiveForm.Text = "Многоугольники";
-                    Shape.Color = Color.Black;
-                    Shape.Radius = 25;
-                    f2.Close();
                 }
                 else if (result == DialogResult.No)
                 {
                     isSaved = true;
                     fileName = null;
-                    Shape.Color = Color.Black;
-                    Shape.Radius = 25;
-                    Form1.ActiveForm.Text = "Многоугольники";
-                    f2.Close();
                 }
                 else if (result == DialogResult.Cancel)
                     fl = false;
             }
             if (fl)
             {
+                Form1.ActiveForm.Text = "Многоугольники";
+                Shape.Color = Color.Black;
+                Shape.Radius = 25;
                 figures.RemoveRange(0, figures.Count);
+                if (f2 != null)
+                    f2.Close();
                 Refresh();
             }
         }
@@ -334,7 +331,8 @@ namespace Многоугольники
                         Form1.ActiveForm.Text = "Многоугольники: " + fileName;
                     }
                 }
-                f2.Close();
+                if (f2 != null)
+                    f2.Close();
             }
             Refresh();
         }
@@ -425,10 +423,10 @@ namespace Многоугольники
             if (clr == DialogResult.OK)
             {
                 Shape.Color = colorDialog1.Color;
+                MessageBox.Show("Цвет изменён");
+                isSaved = false;
             }
             Refresh();
-            MessageBox.Show("Цвет изменён");
-            isSaved = false;
         }
 
         private void radiusToolStripMenuItem_Click(object sender, EventArgs e)
